@@ -1,0 +1,156 @@
+#info {
+    top: 20px;
+    color: #444;
+    height: auto;
+    font-family: arial;
+    right: 20px;
+    margin: 5px;
+    padding: 10px;
+    position: absolute;
+    width: 115px;
+    z-index: 40;
+    border: solid 2px #666;
+    border-radius: 4px;
+    background-color: #fff;
+}
+
+html, body, #mapDiv {
+    padding: 0;
+    margin: 0;
+    height: 100%;
+}
+
+
+button {
+    display: block;
+}
+
+#left_menu {
+    height: 100%;
+    width: 30%;
+    float: left;
+}
+
+#jstree_demo_div {
+    overflow: auto;
+    height: 50%;
+    width: 90%;
+    border: 1px solid black;
+    float: left;
+    margin: 1% 5%;
+    box-sizing: border-box;
+}
+
+#alert_block {
+    height: 50%;
+    width: 100%;
+    float: left;
+}
+
+#alert {
+    width: 84%;
+    margin: 5% auto;
+    background-color: rgb(190, 17, 14);
+    color: white;
+    font-weight: bold;
+    text-align: center;
+    padding: 3%;
+    display: none;
+}
+
+.time_block {
+    height: 25%;
+    width: 100%;
+    float: left;
+}
+
+.time {
+    box-sizing: border-box;
+    height: 60px;
+    width: 90%;
+    padding: 5%;
+    margin: 2% 5%;
+    display: none;
+    background-color: white;
+    color: black;
+    font-weight: bold;
+    text-align: center;
+
+    font-family: inherit;
+    font-size: larger;
+    border: 1px solid black;
+}
+
+input[type="button"] {
+    width: 90%;
+    padding: 3%;
+    margin: 2% 5%;
+    font-family: inherit;
+    font-size: larger;
+    border: 1px solid black;
+    background: none;
+    cursor: pointer;
+}
+
+#deploy {
+
+}
+
+.button_block {
+    width: 100%;
+    float: left;
+}
+
+#mapDiv {
+    float: left;
+    height: 800px;
+    width: 800px;
+    display: block;
+    margin: 10px;
+}
+
+#data_block {
+    display: none;
+}
+
+#props {
+    width: 90%;
+    height: auto;
+    margin: 2% 5%;
+    overflow: scroll;
+}
+
+.section {
+    height: auto;
+    width: 100%;
+    float: left;
+    display: block;
+}
+
+#data {
+    width: 90%;
+    height: auto;
+    margin: 2% 5%;
+    font-family: inherit;
+    font-size: larger;
+    background-color: gainsboro;
+    float: left;
+}
+
+h2 {
+    margin: 1% 0% 5%;
+}
+
+#text {
+    padding: 2% 4%;
+}
+
+p {
+    margin: 3% 0;
+}
+
+.row-header {
+    width: 44%;
+    display: inline-block;
+
+}

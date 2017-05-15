@@ -1,0 +1,23 @@
+#inherit: base-manifest.yml
+applications:
+  - name: predix-place-model-demos
+    buildpack: java_buildpack
+    path: target/place_model-1.0-SNAPSHOT.war
+    memory: 1024M
+
+env:
+    predix_oauthRestHost : iimot02.predix-uaa.run.aws-usw02-pr.ice.predix.io
+    predix_oauthClientId : Guy115:Guy115
+    trustedIssuerIdsRegexPattern : ^https://(.*\\.)?iimot02.predix-uaa.run.aws-usw02-pr.ice.predix.io/oauth/token$
+    accessTokenEndpointUrl : https://iimot02.predix-uaa.run.aws-usw02-pr.ice.predix.io/oauth/token
+    clientId : Guy115
+    clientSecret: Guy115
+    predix_connectionTimeout : 5000
+    predix_socketTimeout : 5000
+    predix_poolMaxSize: 200
+    defaultMaxPerRoute: 25
+    predix_wspool_maxIdle : 5
+    predix_wspool_maxActive : 5
+    predix_wspool_maxWait : 8000
+    predix_wspool_maxInstances : 5
+    
