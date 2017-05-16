@@ -1,42 +1,27 @@
-
 <%@ taglib prefix="c" uri="http://www.springframework.org/tags" %>
-<%--
-  Created by IntelliJ IDEA.
-  User: 502669124
-  Date: 1/17/2017
-  Time: 2:12 PM
-  To change this template use File | Settings | File Templates.
---%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-
-
-    <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no">
+    <meta charset="UTF-8">
     <title>${title}</title>
-
-    <link rel="stylesheet" href="https://js.arcgis.com/3.19/esri/css/esri.css">
-
-
-    <link rel="stylesheet" href="https://js.arcgis.com/4.2/esri/css/main.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
     <link rel="stylesheet" href='<c:url value="${pageContext.request.contextPath}/resources/css/layout.css"/>'>
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
 
     <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.1.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
-    <script src="https://js.arcgis.com/4.2/"></script>
-    <script type="text/javascript" src='<c:url value="${pageContext.request.contextPath}/resources/scripts/map.js"/>'></script>
+    <script src="https://openlayers.org/en/v3.19.1/build/ol.js"></script>
+    <script type="text/javascript"
+            src='<c:url value="${pageContext.request.contextPath}/resources/scripts/script.js"/>'></script>
 </head>
-
-<body>
-    <div id="left_menu">
-        <div id="jstree_demo_div"></div>
-        <div id="alert_block"><div id="alert"></div></div>
+<body onload="init()">
+<div id="left_menu">
+    <div id="jstree_demo_div"></div>
+    <div class="button_block"><input id="test001" type="button" value="Deploy drone"/></div>
+    <div class="button_block"><input id="test002" type="button" value="Reset"/></div>
+    <div id="alert_block"><div id="alert"></div></div>
+    <div class="section">
+        <pre id="props"></pre>
     </div>
-    <div id="mapDiv"></div>
+</div>
+<div id="mapDiv" ></div>
 </body>
 </html>
-
