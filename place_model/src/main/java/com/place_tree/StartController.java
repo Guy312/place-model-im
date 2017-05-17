@@ -36,19 +36,15 @@ public class StartController {
     @Autowired
     ServletContext context;
 
-    @RequestMapping(value = "/test")
-    public String test(Model model) {
-        model.addAttribute("title", "Place model - IntelligentMapping Demo");
-        return "test";
+    @RequestMapping(value = "/demo/{num}")
+    public String demo1(Model model, @PathVariable("num") String demoNumber) {
+        model.addAttribute("title", "Place model - IntelligentMapping Demo #" + demoNumber);
+        return "demo" + demoNumber;
     }
 
-    @RequestMapping(value = "/demo1")
-    public String demo1(Model model) {
-        model.addAttribute("title", "Place model - IntelligentMapping Demo #1");
-        return "demo1";
-    }
-
-
+    /*
+        construction of the place-tree
+     */
     @RequestMapping(value = "/place_tree")
     @ResponseBody
     public String placeTree() {

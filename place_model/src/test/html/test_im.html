@@ -1,13 +1,37 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Test im post</title>
-    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.min.js"></script>
-    <script src="..\js\test_im.js"></script>
+    <title>Image ArcGIS MapServer</title>
+    <link rel="stylesheet" href="https://openlayers.org/en/v4.1.1/css/ol.css" type="text/css">
+    <!-- The line below is only needed for old environments like Internet Explorer and Android 4.x -->
+    <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=requestAnimationFrame,Element.prototype.classList,URL"></script>
+    <script src="https://openlayers.org/en/v4.1.1/build/ol.js"></script>
 </head>
 <body>
-<button onclick="doo()">click me</button>
-<div id="text"></div>
+<div id="map" class="map"></div>
+<script>
+    var url = 'https://services.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/3';
+
+    var layers = [
+        new ol.layer.Tile({
+            source: new ol.source.OSM()
+        }),
+        new ol.layer.Image({
+            source: new ol.source.ImageArcGISRest({
+                ratio: 1,
+                params: {},
+                url: url
+            })
+        })
+    ];
+    var map = new ol.Map({
+        layers: layers,
+        target: 'map',
+        view: new ol.View({
+            center: [-10997148, 4569099],
+            zoom: 4
+        })
+    });
+</script>
 </body>
 </html>

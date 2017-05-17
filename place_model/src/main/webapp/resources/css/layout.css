@@ -109,7 +109,7 @@ input[type="button"] {
     margin: 10px;
 }
 
-#data_block {
+.data_block {
     display: none;
 }
 
@@ -127,7 +127,7 @@ input[type="button"] {
     display: block;
 }
 
-#data {
+.data {
     width: 90%;
     height: auto;
     margin: 2% 5%;
@@ -141,7 +141,7 @@ h2 {
     margin: 1% 0% 5%;
 }
 
-#text {
+.text {
     padding: 2% 4%;
 }
 
