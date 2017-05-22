@@ -41,6 +41,22 @@ class MovingThings {
 
 }
 
+class MyAlert {
+    constructor(msg, id) {
+        this.id = id || "#alert";
+        this.msg = msg;
+    }
+
+    show() {
+        $(this.id).html(this.msg);
+        $(this.id).css("display", "block");
+    }
+
+    hide() {
+        $(this.id).html("");
+        $(this.id).css("display", "none");
+    }
+}
 
 class MovingObject {
     constructor(lat, lon) {
@@ -76,8 +92,8 @@ class MovingObject {
         this.percent = this.perFunc(this.percent + 1);
 
         $.get("/drone/path/" + this.pathName + "/" + this.percent, function (data, status) {
-            console.log("PATH POINT");
-            console.log(data);
+            //console.log("PATH POINT");
+            //console.log(data);
             var pnt = JSON.parse(data)
             this.addPathPoint(pnt[0], pnt[1]);
             this.OnPointRequest = false;
@@ -93,13 +109,13 @@ class MovingObject {
         } else if (this.path.length >= 2) {
 
 
-            console.log("this.pos:");
-            console.log(this.pos);
+            //console.log("this.pos:");
+            //console.log(this.pos);
             if (this.pos == undefined) {
                 console.log("in");
                 this.pos = this.path[0];
             }
-            console.log("out");
+            //console.log("out");
 
             var x0 = this.pos[0];
             var y0 = this.pos[1];
@@ -119,11 +135,17 @@ class MovingObject {
     }
 
     updatePosition(vectorSource) {
-        console.log("UPDATE POSITION");
-        console.log(this.pos);
-        if (this.pos[1] > 41.09595) {
-            $("#alert").html("DRONE OUTSIDE FACILITY BOUNDARY !!");
-            $("#alert").css("display", "block");
+        //console.log("UPDATE POSITION");
+        //console.log(this.pos);
+        locationDataBlock.Lat = this.pos[0];
+        locationDataBlock.Lon = this.pos[1];
+        locationDataBlock.update();
+
+        if ((this.pos[1] > 41.09595) || (this.pos[1] < 41.08745)) {
+            (new MyAlert("DRONE OUTSIDE FACILITY BOUNDARY !!")).show();
+            dataBlock.time_photo_on = false;
+            dataBlock.time_flight_on = false;
+
             this.color = '#ff0000';
             this.OnMoving = false;
         }
@@ -244,17 +266,66 @@ class CountDataBlock {
     }
 }
 
+class LocationDataBlock {
+    constructor(data) {
+        this.Lat = data['Lat'];
+        this.Lon = data['Lon'];
+        this.h = data['h'];
+    }
+
+    turnOff() {
+        $('#data_block_3').css("display", "none");
+    }
+
+    turnOn() {
+        $('#data_block_3').css("display", "block");
+    }
+
+    toFixed(num, fixed) {
+        var re = new RegExp('^-?\\d+(?:\.\\d{0,' + (fixed || -1) + '})?');
+        return num.toString().match(re)[0];
+    }
+
+    heightFormat(h) {
+        if (h==undefined) return undefined;
+        return this.toFixed(h, 2) + "m";
+    }
+
+    dms(a0) {
+        var a = Math.abs(a0);
+        var d = Math.trunc(a);
+        var m = Math.trunc((a - d) * 60);
+        var s = this.toFixed((a - d - m / 60) * 60 * 60, 2);
+
+        return Math.sign(a0) * d + '\u00B0' + m + "'" + s + "\"";
+    }
+
+    update() {
+        [['#lat', this.dms(this.Lat)],
+            ['#lon', this.dms(this.Lon)],
+            ['#height', this.heightFormat(this.h)]].forEach(function (cnt) {
+            if (undefined != cnt[1]) {
+                $(cnt[0]).html(cnt[1]);
+            } else {
+                $(cnt[0]).html('-');
+            }
+        }.bind(this))
+
+    }
+}
+
 
 var map;
 var vectorSource;
 var formatter;
 var dataBlock = new DataBlock({time_flight: 0, time_photo: 0});
-var mo = new MovingObject(-76.1455, 41.094);
-var mos = new MovingThings(vectorSource);
+var mo = new MovingObject(-76.14639043807983, 41.095);
+var mos;
 var countDataBlock;
-
+var locationDataBlock = new LocationDataBlock({});
 function init() {
     vectorSource = new ol.source.Vector();
+    mos = new MovingThings(vectorSource);
     formatter = new ol.format.GeoJSON();
 
     var url = "https://services.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer";
@@ -291,6 +362,9 @@ function init() {
     $("#test001").click(function () {
         dataBlock.time_flight_on = true;
         dataBlock.turnOn();
+        if (demo_num == 2) {
+            mo.pathName = "back"
+        }
         mo.show(vectorSource);
         mos.mos.push(mo);
     });
@@ -317,12 +391,31 @@ function init() {
 
     });
 
+    // deploy drone on path
+    $("#test004").click(function () {
+        var mo2 = new MovingObject();
+        mo2.pathName = "dronepath_path001";
+        mo2.d = 0.00005;
+
+        mos.mos.push(mo2);
+        console.log("deploy drone on path")
+    });
+
+    // reset drone on path
+    $("#test005").click(function () {
+        mos.clear();
+        console.log("reset drone on path")
+    });
+
     $("#sendForklift").click(function () {
         if (countDataBlock == undefined) {
             countDataBlock = new CountDataBlock({trackCount: 2});
             countDataBlock.turnOn();
         }
         countDataBlock.addForklift();
+        if (countDataBlock.forkliftCount > 4) {
+            (new MyAlert("Too many forklifts in section!")).show();
+        }
 
         var mo2 = new MovingObject();
         mo2.pathName = "forklift_path001";
@@ -337,12 +430,17 @@ function init() {
         mos.mos.push(mo2);
     });
 
-    function addFeatureToMapAndZoom(Feature) {
+
+    function readFeature(Feature) {
         var features = formatter.readFeatures(Feature, {
             dataProjection: 'EPSG:4326',
             featureProjection: 'EPSG:3857'
         });
-        features[0].setStyle(
+        return features[0]
+    }
+
+    function showFeature(Feature) {
+        Feature.setStyle(
             new ol.style.Style({
                 fill: new ol.style.Fill({
                     color: 'rgba(255, 100, 50, 0.0)'
@@ -353,9 +451,18 @@ function init() {
                 })
             })
         );
-        vectorSource.addFeatures(features);
+        vectorSource.addFeatures([Feature]);
+    }
 
-        map.getView().fit(features[0].getGeometry().getExtent(), map.getSize());
+    function zoomToFeature(Feature) {
+        map.getView().fit(Feature.getGeometry().getExtent(), map.getSize());
+    }
+
+
+    function addFeatureToMapAndZoom(Feature) {
+        var features = readFeature(Feature)
+        showFeature(features)
+        zoomToFeature(features);
     }
 
 
@@ -367,6 +474,14 @@ function init() {
                 'data': JSON.parse(data)
             }
         }).bind("loaded.jstree", function () {
+            var selectedPlace = "Susquehanna Steam Electric Station";
+            if (demo_num == 3) {
+                selectedPlace = "Section003";
+            }
+            var sus = $.grep(JSON.parse(data), function (e) {
+                return e.text == selectedPlace;
+            });
+            $('#jstree_demo_div').jstree("select_node", sus[0].id.toString()).trigger("select_node.jstree");
         });
 
 
@@ -384,6 +499,33 @@ function init() {
             });
         });
 
+        if (demo_num == 4) {
+            locationDataBlock.turnOn();
+            var zoomTo = 'Susquehanna Steam Electric Station';
+            var placesToShow = ['Section002', 'Section003', 'Section004', 'Section005', 'Section006', 'Section007', 'Section008', 'Susquehanna Steam Electric Station', 'dronepath_path001'];
+        } else if (demo_num == 3) {
+            var zoomTo = 'Section003';
+            var placesToShow = ['Section003', 'Susquehanna Steam Electric Station'];
+        } else if (demo_num == 2) {
+            var zoomTo = 'Susquehanna Steam Electric Station';
+            var placesToShow = [zoomTo];
+        } else if (demo_num == 1) {
+            var zoomTo = 'United States of America';
+            var placesToShow = [zoomTo];
+        }
+
+        placesToShow.forEach(function (element) {
+            $.get("/polygon/".concat(element), function (data, status) {
+                var dataJson = JSON.parse(data);
+                $('#props').html(JSON.stringify(dataJson.properties, null, 2));
+                var feature = readFeature(dataJson.geometry)
+                showFeature(feature)
+                if (zoomTo == element) {
+                    zoomToFeature(feature);
+                    console.log("zoomed")
+                }
+            });
+        })
 
     });
 

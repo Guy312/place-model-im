@@ -11,6 +11,7 @@
     <script src="https://openlayers.org/en/v3.19.1/build/ol.js"></script>
     <script type="text/javascript"
             src='<c:url value="${pageContext.request.contextPath}/resources/scripts/script.js"/>'></script>
+    <script>var demo_num = ${demoNumber}</script>
 </head>
 <body onload="init()">
 <div id="left_menu">

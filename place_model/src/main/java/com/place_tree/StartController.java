@@ -39,6 +39,7 @@ public class StartController {
     @RequestMapping(value = "/demo/{num}")
     public String demo1(Model model, @PathVariable("num") String demoNumber) {
         model.addAttribute("title", "Place model - IntelligentMapping Demo #" + demoNumber);
+        model.addAttribute("demoNumber", demoNumber);
         return "demo" + demoNumber;
     }
 

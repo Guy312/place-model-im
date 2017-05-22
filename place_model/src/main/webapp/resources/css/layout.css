@@ -42,7 +42,7 @@ button {
 }
 
 #alert_block {
-    height: 50%;
+    height: auto;
     width: 100%;
     float: left;
 }

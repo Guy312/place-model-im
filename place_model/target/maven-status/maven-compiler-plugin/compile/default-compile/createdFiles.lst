@@ -1,3 +1,4 @@
 com\place_tree\StartController.class
 com\place_tree\Place.class
+com\place_tree\DroneSimulator.class
 com\place_tree\IntelligentMapping.class

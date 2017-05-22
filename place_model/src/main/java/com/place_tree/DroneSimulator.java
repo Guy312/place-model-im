@@ -54,6 +54,12 @@ public class DroneSimulator {
             coordinates.add(0, -76.14639043807983);
             coordinates.add(1, 41.095 + p * 0.0001);
             return coordinates.toString();
+        } else if (fileName.equals("back")) {
+            double p = Double.parseDouble(percent);
+            JSONArray coordinates = new JSONArray();
+            coordinates.add(0, -76.14639043807983);
+            coordinates.add(1, 41.095 - p * 0.0001);
+            return coordinates.toString();
         }
 
 
